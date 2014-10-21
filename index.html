@@ -13,6 +13,20 @@
                     $('#log').text(err.toString());
                 }
             });
+
+            $('#readLocalStorage').click(function () {
+                try {
+                    var ls = {};
+                    for (var i = 0, count = localStorage.length; i < count; i++) {
+                        var key = localStorage.key(i);
+                        ls[key] = localStorage[key];
+                    }
+
+                    $('#localStorageOutput').text(JSON.stringify(ls, null, 4));
+                } catch (err) {
+                    $('#log').text(err.toString());
+                }
+            });
         });
     </script>
     <style>
@@ -31,6 +45,12 @@
         <p>Output:</p>
         <textarea id="output"></textarea>
         <pre id="log"></pre>
+    </div>
+    <div>
+        <h3>LocalStorage reader</h3>
+        <button id="readLocalStorage">Read local storage</button>
+        <p>Output:</p>
+        <textarea id="localStorageOutput"></textarea>
     </div>
 </body>
 </html>
