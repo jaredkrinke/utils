@@ -8,7 +8,7 @@
             var output = $('#output');
             $('#format').click(function () {
                 try {
-                    output.text(JSON.stringify(JSON.parse(input.text()), null, 4));
+                    output.val(JSON.stringify(JSON.parse(input.val()), null, 4));
                 } catch (err) {
                     $('#log').text(err.toString());
                 }
@@ -22,7 +22,34 @@
                         ls[key] = localStorage[key];
                     }
 
-                    $('#localStorageOutput').text(JSON.stringify(ls, null, 4));
+                    $('#localStorageOutput').val(JSON.stringify(ls, null, 4));
+                } catch (err) {
+                    $('#log').text(err.toString());
+                }
+            });
+
+            $('#reTest').click(function () {
+                try {
+                    var patternString = $('#rePattern').val();
+                    var inputPattern = /^\/([\s\S]*?)\/([a-z]*)$/m;
+                    var inputMatch = inputPattern.exec(patternString);
+                    if (inputMatch) {
+                        var pattern = new RegExp(inputMatch[1].replace(/\\\//gm, '/'), inputMatch[2]);
+                        var matches = pattern.exec($('#reInput').val());
+                        var message = '';
+                        if (matches) {
+                            for (var i = 0, count = matches.length; i < count; i++) {
+                                message += '[' + i + ']:\n';
+                                message += matches[i];
+                                message += '\n\n';
+                            }
+                        } else {
+                            message = '*** No match ***';
+                        }
+                        $('#reOutput').val(message);
+                    } else {
+                        $('#log').text('Invalid regular expression: ' + patternString);
+                    }
                 } catch (err) {
                     $('#log').text(err.toString());
                 }
@@ -44,13 +71,23 @@
         <button id="format">Format</button>
         <p>Output:</p>
         <textarea id="output"></textarea>
-        <pre id="log"></pre>
     </div>
     <div>
         <h3>localStorage reader</h3>
         <button id="readLocalStorage">Read localStorage</button>
         <p>Output:</p>
         <textarea id="localStorageOutput"></textarea>
+    </div>
+    <div>
+        <h3>Regular expression test</h3>
+        <p>Pattern:</p>
+        <textarea id="rePattern"></textarea>
+        <p>Input:</p>
+        <textarea id="reInput"></textarea>
+        <button id="reTest">Test</button>
+        <p>Output:</p>
+        <textarea id="reOutput"></textarea>
+        <pre id="log"></pre>
     </div>
 </body>
 </html>
